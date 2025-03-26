@@ -65,6 +65,7 @@ def supplier_management_app():
             
             with st.form("edit_supplier_form"):
                 name = st.text_input("거래처명*", edit_data.get('name', ''))
+                business_number = st.text_input("사업자등록번호 (10자리)", edit_data.get('business_number', ''))
                 address = st.text_input("주소", edit_data.get('address', ''))
                 phone = st.text_input("연락처", edit_data.get('phone', ''))
                 email = st.text_input("이메일", edit_data.get('email', ''))
@@ -77,6 +78,7 @@ def supplier_management_app():
                     updated_supplier = {
                         'id': edit_data['id'],
                         'name': name,
+                        'business_number': business_number,
                         'address': address,
                         'phone': phone,
                         'email': email,
@@ -113,6 +115,7 @@ def supplier_management_app():
         
         with st.form("add_supplier_form"):
             name = st.text_input("거래처명*")
+            business_number = st.text_input("사업자등록번호 (10자리)")
             address = st.text_input("주소")
             phone = st.text_input("연락처")
             email = st.text_input("이메일")
@@ -125,6 +128,7 @@ def supplier_management_app():
                 new_supplier = {
                     'id': generate_id(suppliers),
                     'name': name,
+                    'business_number': business_number,
                     'address': address,
                     'phone': phone,
                     'email': email,
@@ -154,6 +158,7 @@ def supplier_management_app():
         
         template_df = pd.DataFrame({
             '거래처명': ['거래처명을 입력하세요'],
+            '사업자등록번호': ['사업자등록번호 10자리를 입력하세요'],
             '주소': ['주소를 입력하세요'],
             '연락처': ['연락처를 입력하세요'],
             '이메일': ['이메일을 입력하세요'],
@@ -191,6 +196,7 @@ def supplier_management_app():
                             new_supplier = {
                                 'id': generate_id(suppliers),
                                 'name': row.get('거래처명', ''),
+                                'business_number': row.get('사업자등록번호', ''),
                                 'address': row.get('주소', ''),
                                 'phone': row.get('연락처', ''),
                                 'email': row.get('이메일', ''),

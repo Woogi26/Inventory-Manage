@@ -135,6 +135,20 @@ def validate_supplier_data(supplier):
             if existing_supplier['name'] == supplier['name']:
                 return False, "이미 존재하는 거래처명입니다."
     
+    # 사업자등록번호 유효성 검사
+    business_number = supplier.get('business_number', '')
+    if business_number:
+        # 사업자번호 형식 검사 (숫자 10자리)
+        if not business_number.isdigit() or len(business_number) != 10:
+            return False, "사업자등록번호는 10자리 숫자여야 합니다."
+        
+        # 사업자번호 중복 검사
+        for existing_supplier in suppliers:
+            if 'id' in supplier and existing_supplier['id'] == supplier['id']:
+                continue  # 자기 자신은 건너뜀
+            if existing_supplier.get('business_number') == business_number:
+                return False, "이미 등록된 사업자등록번호입니다."
+    
     return True, "검증 완료"
 
 def validate_item_data(item):
@@ -148,5 +162,15 @@ def validate_item_data(item):
         for existing_item in items:
             if existing_item['name'] == item['name']:
                 return False, "이미 존재하는 물품명입니다."
+    
+    # 품번 유효성 검사
+    item_code = item.get('item_code', '')
+    if item_code:
+        # 품번 중복 검사
+        for existing_item in items:
+            if 'id' in item and existing_item['id'] == item['id']:
+                continue  # 자기 자신은 건너뜀
+            if existing_item.get('item_code') == item_code:
+                return False, "이미 등록된 품번입니다."
     
     return True, "검증 완료" 

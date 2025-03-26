@@ -67,19 +67,23 @@ def dashboard_app():
             
             # 거래처 정보 가져오기
             supplier_name = "없음"
+            supplier_business_number = ""
             if item.get('supplier_id'):
                 supplier = next((s for s in suppliers if s['id'] == item['supplier_id']), None)
                 if supplier:
                     supplier_name = supplier['name']
+                    supplier_business_number = supplier.get('business_number', '')
             
             stock_data.append({
                 '물품명': item.get('name', ''),
+                '품번': item.get('item_code', ''),
                 '카테고리': item.get('category', '기타'),
                 '재고': item.get('stock', 0),
                 '단위': item.get('unit', ''),
                 '단가': item.get('unit_price', 0),
                 '재고가치': stock_value,
-                '거래처': supplier_name
+                '거래처': supplier_name,
+                '사업자번호': supplier_business_number
             })
         
         stock_df = pd.DataFrame(stock_data)
@@ -100,7 +104,8 @@ def dashboard_app():
                     y='재고가치',
                     title='상위 10개 물품 재고 가치',
                     labels={'재고가치': '재고 가치 (원)', '물품명': '물품명'},
-                    color='카테고리'
+                    color='카테고리',
+                    hover_data=['품번']  # 품번 정보 툴팁에 추가
                 )
                 
                 fig.update_layout(xaxis_tickangle=-45)
@@ -128,6 +133,25 @@ def dashboard_app():
     else:
         st.info("등록된 물품이 없습니다.")
     
+    # 거래처 정보 섹션
+    st.markdown("### 거래처 정보")
+    
+    if suppliers:
+        suppliers_data = []
+        for supplier in suppliers:
+            suppliers_data.append({
+                '거래처명': supplier.get('name', ''),
+                '사업자번호': supplier.get('business_number', ''),
+                '연락처': supplier.get('phone', ''),
+                '이메일': supplier.get('email', ''),
+                '주소': supplier.get('address', '')
+            })
+        
+        suppliers_df = pd.DataFrame(suppliers_data)
+        st.dataframe(suppliers_df)
+    else:
+        st.info("등록된 거래처가 없습니다.")
+    
     # 최근 입출고 내역
     st.markdown("### 최근 입출고 내역")
     
@@ -141,26 +165,32 @@ def dashboard_app():
         for t in recent_trans:
             # 물품 정보
             item_name = "알 수 없음"
+            item_code = ""
             item_unit = ""
             item = next((i for i in items if i['id'] == t['item_id']), None)
             if item:
                 item_name = item['name']
+                item_code = item.get('item_code', '')
                 item_unit = item.get('unit', '')
             
             # 거래처 정보
             supplier_name = "없음"
+            supplier_business_number = ""
             if t.get('supplier_id'):
                 supplier = next((s for s in suppliers if s['id'] == t['supplier_id']), None)
                 if supplier:
                     supplier_name = supplier['name']
+                    supplier_business_number = supplier.get('business_number', '')
             
             trans_data.append({
                 '날짜': t.get('transaction_date', ''),
                 '유형': t['transaction_type'],
                 '물품명': item_name,
+                '품번': item_code,
                 '수량': t['quantity'],
                 '단위': item_unit,
                 '거래처': supplier_name,
+                '사업자번호': supplier_business_number,
                 '비고': t.get('note', '')
             })
         

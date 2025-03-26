@@ -68,6 +68,7 @@ def item_management_app():
             
             with st.form("edit_item_form"):
                 name = st.text_input("물품명*", edit_data.get('name', ''))
+                item_code = st.text_input("품번", edit_data.get('item_code', ''))
                 category = st.text_input("카테고리", edit_data.get('category', ''))
                 
                 # 거래처 선택 옵션
@@ -94,6 +95,7 @@ def item_management_app():
                     updated_item = {
                         'id': edit_data['id'],
                         'name': name,
+                        'item_code': item_code,
                         'category': category,
                         'supplier_id': supplier_id,
                         'unit': unit,
@@ -135,6 +137,7 @@ def item_management_app():
         
         with st.form("add_item_form"):
             name = st.text_input("물품명*")
+            item_code = st.text_input("품번")
             category = st.text_input("카테고리")
             
             # 거래처 선택 옵션
@@ -160,6 +163,7 @@ def item_management_app():
                 new_item = {
                     'id': generate_id(items),
                     'name': name,
+                    'item_code': item_code,
                     'category': category,
                     'supplier_id': supplier_id,
                     'unit': unit,
@@ -191,6 +195,7 @@ def item_management_app():
         
         template_df = pd.DataFrame({
             '물품명': ['물품명을 입력하세요'],
+            '품번': ['품번을 입력하세요'],
             '카테고리': ['카테고리를 입력하세요'],
             '거래처명': ['거래처명을 입력하세요 (없으면 비워두세요)'],
             '단위': ['단위를 입력하세요 (예: EA, KG, M)'],
@@ -248,6 +253,7 @@ def item_management_app():
                             new_item = {
                                 'id': generate_id(items),
                                 'name': row.get('물품명', ''),
+                                'item_code': row.get('품번', ''),
                                 'category': row.get('카테고리', ''),
                                 'supplier_id': supplier_id,
                                 'unit': row.get('단위', ''),
